@@ -1,6 +1,8 @@
 package com.app.factory;
 
 import com.app.enums.BodyPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
 public class Factory implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(Factory.class);
     private final int WORK_PERIOD_IN_DAYS;
     private BlockingQueue<BodyPart> parts;
     private static final int MAX_COUNT_OF_BODY_PARTS_PER_DAY = 10;
@@ -29,7 +32,7 @@ public class Factory implements Runnable {
     @Override
     public void run() {
         for(int day = 1; day <= 100; day++){
-            produceBodyParts();
+            produceBodyParts(day);
             try {
                 endOfDay.await();
                 endOfNight.await();
@@ -39,7 +42,7 @@ public class Factory implements Runnable {
         }
     }
 
-    private void produceBodyParts(){
+    private void produceBodyParts(int day){
         Random random = new Random();
         int amount = random.nextInt(MAX_COUNT_OF_BODY_PARTS_PER_DAY + 1);
 
@@ -47,6 +50,8 @@ public class Factory implements Runnable {
             BodyPart part = BodyPart.values()[random.nextInt(COUNT_OF_BODY_PARTS)];
             parts.add(part);
         }
+
+        logger.info("Producing {} parts on day {}", amount, day);
     }
 
     public synchronized List<BodyPart> getParts(int maxCarryAmount) throws InterruptedException {

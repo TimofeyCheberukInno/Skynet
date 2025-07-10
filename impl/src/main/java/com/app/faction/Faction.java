@@ -2,6 +2,8 @@ package com.app.faction;
 
 import com.app.enums.BodyPart;
 import com.app.factory.Factory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -10,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CyclicBarrier;
 
 public class Faction implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(Faction.class);
     private final int WORK_PERIOD_IN_DAYS;
     private static final int MAX_AMOUNT_TO_CARRY = 5;
     Map<BodyPart, Integer> parts;
@@ -34,7 +37,7 @@ public class Faction implements Runnable {
             try {
                 endOfDay.await();
 
-                requestParts();
+                requestParts(day);
 
                 endOfNight.await();
             } catch (InterruptedException | BrokenBarrierException e) {
@@ -45,8 +48,9 @@ public class Faction implements Runnable {
         reportArmyComposition();
     }
 
-    private void requestParts() throws InterruptedException {
+    private void requestParts(int day) throws InterruptedException {
         List<BodyPart> requestedParts = factory.getParts(MAX_AMOUNT_TO_CARRY);
+        logger.info("List of requested parts for {} for day {} : {} ", Thread.currentThread().getName(), day,  requestedParts);
         requestedParts.forEach(part -> parts.put(part, parts.getOrDefault(part, 0) + 1));
     }
 
@@ -58,6 +62,6 @@ public class Faction implements Runnable {
 
         readyRobots =  readyRobots == Integer.MAX_VALUE ? 0 : readyRobots;
 
-        System.out.println(Thread.currentThread().getName() + "has " + readyRobots + " robots!");
+        logger.info("{}has {} robots!", Thread.currentThread().getName(), readyRobots);
     }
 }

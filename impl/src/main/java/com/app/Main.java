@@ -15,10 +15,10 @@ public class Main {
 
         CyclicBarrier endOfDay = new CyclicBarrier(
                 3,
-                () -> System.out.println("\n=== Day Is Over ==="));
+                () -> System.out.println("\n=== Day Is Over ===\n"));
         CyclicBarrier endOfNight = new CyclicBarrier(
                 3,
-                () -> System.out.println("\n=== Night is Over ==="));
+                () -> System.out.println("\n=== Night is Over ===\n"));
 
         Factory factory = new Factory(wordPeriodInDays,
                 endOfDay,
