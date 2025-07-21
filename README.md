@@ -1,0 +1,1 @@
+Link to scheme of application : https://excalidraw.com/#json=EH-U5WBIcoWUjgMmo6lm2,YM9hmo8nP5KLAQKGvU3CqQ
